@@ -5,6 +5,7 @@ import useSWR from 'swr'
 import { useRouter } from 'next/navigation'
 import { fetchAssets, getAssetsKey, saveAssetOverride, deleteAssetOverride, fetchOrders, getOrdersKey } from '@/lib/data-service'
 import { isAdminAuthenticated, loginAdmin, logoutAdmin } from '@/lib/admin-auth'
+import { t, tReplace } from '@/lib/i18n'
 import { Asset, Order } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -95,24 +96,24 @@ export default function AdminPage() {
         <div className="mx-auto max-w-xl px-4 py-20">
           <div className="rounded-3xl border border-border bg-card p-10 shadow-sm">
             <div className="mb-6">
-              <p className="text-sm text-muted-foreground">Admin sign in</p>
-              <h1 className="text-3xl font-semibold">Enter admin credentials</h1>
+              <p className="text-sm text-muted-foreground">{t('admin.sign_in')}</p>
+              <h1 className="text-3xl font-semibold">{t('admin.enter_credentials')}</h1>
             </div>
             <div className="space-y-4">
               <label className="block text-sm font-medium text-muted-foreground">
-                Password
+                {t('admin.password')}
                 <Input
                   type="password"
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                   className="mt-2"
-                  placeholder="Enter password"
+                  placeholder={t('admin.enter_credentials')}
                 />
               </label>
               {loginError ? (
                 <p className="text-sm text-destructive">{loginError}</p>
               ) : (
-                <p className="text-sm text-muted-foreground">Demo admin password: <span className="font-medium text-foreground">admin123</span></p>
+                <p className="text-sm text-muted-foreground">{tReplace('admin.demo_password', { password: (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_ADMIN_PASSWORD) || 'admin123' })}</p>
               )}
               <div className="flex items-center gap-3">
                 <Button
@@ -121,13 +122,13 @@ export default function AdminPage() {
                       setIsAdmin(true)
                       setLoginError('')
                     } else {
-                      setLoginError('Wrong password, try again.')
+                      setLoginError(t('admin.wrong_password'))
                     }
                   }}
                 >
-                  Sign in
+                  {t('admin.sign_in_button')}
                 </Button>
-                <Button variant="outline" onClick={() => router.push('/')}>Back to store</Button>
+                <Button variant="outline" onClick={() => router.push('/')}>{t('admin.back_to_store')}</Button>
               </div>
             </div>
           </div>
@@ -141,17 +142,15 @@ export default function AdminPage() {
       <div className="mx-auto max-w-7xl px-4 py-10">
         <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-sm text-muted-foreground">Admin Dashboard</p>
-            <h1 className="text-3xl font-semibold">Manage store data</h1>
+            <p className="text-sm text-muted-foreground">{t('admin.dashboard')}</p>
+            <h1 className="text-3xl font-semibold">{t('admin.dashboard')}</h1>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <Button variant="outline" onClick={() => router.push('/')}>Back to store</Button>
-            <Button variant="outline" onClick={() => router.push('/admin/orders')}>Orders</Button>
-            <Button variant="outline" onClick={() => { logoutAdmin(); setIsAdmin(false) }}>
-              Log out
-            </Button>
+            <Button variant="outline" onClick={() => router.push('/')}>{t('admin.back_to_store')}</Button>
+            <Button variant="outline" onClick={() => router.push('/admin/orders')}>{t('admin.orders')}</Button>
+            <Button variant="outline" onClick={() => { logoutAdmin(); setIsAdmin(false) }}>{t('admin.logout')}</Button>
             <Button variant="secondary" onClick={() => { mutateAssets(); mutateOrders() }}>
-              <RefreshCw className="mr-2 size-4" /> Refresh data
+              <RefreshCw className="mr-2 size-4" /> {t('admin.refresh')}
             </Button>
           </div>
         </div>

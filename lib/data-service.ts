@@ -11,15 +11,15 @@ import {
 // Simulate network delay
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-// Simulate random failures for testing error states (disable for production)
-const SIMULATE_ERRORS = false
-const ERROR_RATE = 0.1 // 10% chance of error
+// Control simulation via env var `NEXT_PUBLIC_SIMULATE` (default: false)
+const SIMULATE = (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_SIMULATE === 'true') ?? false
+const ERROR_RATE = 0.1 // 10% chance of error when simulation enabled
 
 const ASSET_OVERRIDES_KEY = 'ai-assets-admin-overrides'
 const ORDER_STORAGE_KEY = 'ai-assets-orders'
 
 function maybeThrow() {
-  if (SIMULATE_ERRORS && Math.random() < ERROR_RATE) {
+  if (SIMULATE && Math.random() < ERROR_RATE) {
     throw new Error('Network error: Failed to fetch data')
   }
 }
@@ -98,7 +98,7 @@ export function deleteAssetOverride(slug: string) {
 }
 
 export async function fetchAssets(params: FetchAssetsParams): Promise<FetchAssetsResult> {
-  await delay(300 + Math.random() * 400) // 300-700ms delay
+  if (SIMULATE) await delay(300 + Math.random() * 400) // 300-700ms delay
   maybeThrow()
 
   let filtered = [...getAssetsWithOverrides()]
@@ -162,7 +162,7 @@ export async function fetchAssets(params: FetchAssetsParams): Promise<FetchAsset
 }
 
 export async function fetchAssetBySlug(slug: string): Promise<Asset | null> {
-  await delay(200 + Math.random() * 300) // 200-500ms delay
+  if (SIMULATE) await delay(200 + Math.random() * 300) // 200-500ms delay
   maybeThrow()
 
   const asset = getAssetsWithOverrides().find((item) => item.slug === slug)
@@ -170,28 +170,28 @@ export async function fetchAssetBySlug(slug: string): Promise<Asset | null> {
 }
 
 export async function fetchReviewsForAsset(assetId: string): Promise<Review[]> {
-  await delay(150 + Math.random() * 250) // 150-400ms delay
+  if (SIMULATE) await delay(150 + Math.random() * 250) // 150-400ms delay
   maybeThrow()
 
   return reviews.filter((r) => r.assetId === assetId)
 }
 
 export async function fetchCategories() {
-  await delay(100 + Math.random() * 100) // 100-200ms delay
+  if (SIMULATE) await delay(100 + Math.random() * 100) // 100-200ms delay
   maybeThrow()
 
   return mockCategories
 }
 
 export async function fetchOrders(): Promise<Order[]> {
-  await delay(150 + Math.random() * 200)
+  if (SIMULATE) await delay(150 + Math.random() * 200)
   maybeThrow()
 
   return loadOrders()
 }
 
 export async function saveOrder(order: Order): Promise<Order> {
-  await delay(100 + Math.random() * 150)
+  if (SIMULATE) await delay(100 + Math.random() * 150)
   maybeThrow()
 
   const current = loadOrders()
@@ -200,7 +200,7 @@ export async function saveOrder(order: Order): Promise<Order> {
 }
 
 export async function updateOrderStatus(orderId: string, status: Order['status']): Promise<Order | null> {
-  await delay(100 + Math.random() * 150)
+  if (SIMULATE) await delay(100 + Math.random() * 150)
   maybeThrow()
 
   const current = loadOrders()

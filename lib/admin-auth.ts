@@ -1,7 +1,7 @@
 'use client'
 
 const ADMIN_AUTH_KEY = 'ai-assets-admin-auth'
-const ADMIN_PASSWORD = 'admin123'
+const ADMIN_PASSWORD = (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_ADMIN_PASSWORD) || 'admin123'
 
 export function isAdminAuthenticated() {
   if (typeof window === 'undefined') return false

@@ -1,0 +1,52 @@
+const DEFAULT_LOCALE = (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_LOCALE) || 'ru'
+
+function getLocale(): string {
+  if (typeof window !== 'undefined') {
+    return window.localStorage.getItem('locale') || DEFAULT_LOCALE
+  }
+  return DEFAULT_LOCALE
+}
+
+const translations: Record<string, Record<string, string>> = {
+  ru: {
+    'admin.sign_in': 'Вход администратора',
+    'admin.enter_credentials': 'Введите пароль администратора',
+    'admin.password': 'Пароль',
+    'admin.demo_password': 'Демо-пароль администратора: {password}',
+    'admin.back_to_store': 'Вернуться в магазин',
+    'admin.sign_in_button': 'Войти',
+    'admin.dashboard': 'Панель администратора',
+    'admin.refresh': 'Обновить данные',
+    'admin.logout': 'Выйти',
+    'admin.orders': 'Заказы',
+    'admin.wrong_password': 'Неверный пароль, попробуйте ещё раз.'
+  },
+  en: {
+    'admin.sign_in': 'Admin sign in',
+    'admin.enter_credentials': 'Enter admin credentials',
+    'admin.password': 'Password',
+    'admin.demo_password': 'Demo admin password: {password}',
+    'admin.back_to_store': 'Back to store',
+    'admin.sign_in_button': 'Sign in',
+    'admin.dashboard': 'Admin Dashboard',
+    'admin.refresh': 'Refresh data',
+    'admin.logout': 'Log out',
+    'admin.orders': 'Orders',
+    'admin.wrong_password': 'Wrong password, try again.'
+  }
+}
+
+export function t(key: string) {
+  const locale = getLocale()
+  return translations[locale]?.[key] ?? translations['en']?.[key] ?? key
+}
+
+export function tReplace(key: string, vars: Record<string, string>) {
+  let txt = t(key)
+  Object.keys(vars).forEach((k) => {
+    txt = txt.replace(`{${k}}`, vars[k])
+  })
+  return txt
+}
+
+export default { t, tReplace }
