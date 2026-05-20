@@ -1,54 +1,56 @@
 'use client'
 
 import { Header } from '@/components/header'
-import { Button } from '@/components/ui/button'
 import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 
 export default function SellPage() {
-  const [title, setTitle] = useState('')
+  const [name, setName] = useState('')
   const [description, setDescription] = useState('')
+  const [price, setPrice] = useState('0')
+  const [message, setMessage] = useState('')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // demo: save to localStorage (seller uploads)
-    const items = JSON.parse(window.localStorage.getItem('seller-items') || '[]')
-    items.unshift({ id: Date.now(), title, description, createdAt: new Date().toISOString() })
-    window.localStorage.setItem('seller-items', JSON.stringify(items))
-    setTitle('')
+    const uploadsRaw = window.localStorage.getItem('user-uploads')
+    const uploads = uploadsRaw ? JSON.parse(uploadsRaw) : []
+    uploads.unshift({ id: Date.now().toString(), name, description, price, createdAt: new Date().toISOString() })
+    window.localStorage.setItem('user-uploads', JSON.stringify(uploads))
+    setMessage('Ваш лот сохранён локально. (Демо)')
+    setName('')
     setDescription('')
-    alert('Спасибо — ваша публикация сохранена локально (демо).')
+    setPrice('0')
   }
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <div className="mx-auto max-w-3xl px-4 py-10">
+      <div className="mx-auto max-w-3xl px-4 py-12">
         <h1 className="text-2xl font-semibold">Продавайте свои работы</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Загрузите артефакт, опишите его и начните продавать — демо-режим сохраняет данные локально.</p>
+        <p className="text-sm text-muted-foreground mb-6">Здесь вы можете опубликовать своё произведение для продажи: коды, игры, графика или готовые ассеты.</p>
 
-        <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="space-y-4">
           <label className="block">
-            <span className="text-sm">Название</span>
-            <input value={title} onChange={(e) => setTitle(e.target.value)} className="mt-1 block w-full rounded-md border px-3 py-2" />
+            <div className="text-sm font-medium">Название</div>
+            <input className="mt-1 w-full rounded-md border px-3 py-2" value={name} onChange={(e) => setName(e.target.value)} />
           </label>
+
           <label className="block">
-            <span className="text-sm">Описание</span>
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="mt-1 block w-full rounded-md border px-3 py-2" />
+            <div className="text-sm font-medium">Описание</div>
+            <textarea className="mt-1 w-full rounded-md border px-3 py-2" value={description} onChange={(e) => setDescription(e.target.value)} />
           </label>
-          <div className="flex gap-2">
+
+          <label className="block">
+            <div className="text-sm font-medium">Цена (USD)</div>
+            <input type="number" className="mt-1 w-48 rounded-md border px-3 py-2" value={price} onChange={(e) => setPrice(e.target.value)} />
+          </label>
+
+          <div>
             <Button type="submit">Опубликовать (демо)</Button>
-            <Button variant="outline" onClick={() => alert('Загрузка файлов в демо отключена. На продакшене здесь будет загрузчик файлов.')}>Загрузить файл</Button>
           </div>
         </form>
 
-        <div className="mt-8">
-          <h2 className="text-lg font-semibold">Почему продавать у нас</h2>
-          <ul className="list-disc ml-6 mt-2 text-sm">
-            <li>Продавайте коды, игры, готовые работы и ассеты.</li>
-            <li>Мы — агрегатор, помогаем авторам находить покупателей.</li>
-            <li>Готовые решения и исходники можно выгружать как пакеты.</li>
-          </ul>
-        </div>
+        {message && <p className="mt-4 text-sm text-muted-foreground">{message}</p>}
       </div>
     </div>
   )

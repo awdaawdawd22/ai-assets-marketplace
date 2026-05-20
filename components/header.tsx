@@ -111,9 +111,9 @@ export function Header() {
       {mobileMenuOpen && (
         <nav className="border-t border-border bg-background px-4 py-4 md:hidden">
           <div className="flex flex-col gap-2">
-            <Button variant="ghost" className="justify-start">{t('nav.browse')}</Button>
-            <Button variant="ghost" className="justify-start">{t('nav.publishers')}</Button>
-            <Button variant="ghost" className="justify-start">{t('nav.sales')}</Button>
+            <Button variant="ghost" className="justify-start" onClick={() => router.push('/browse')}>{t('nav.browse')}</Button>
+            <Button variant="ghost" className="justify-start" onClick={() => router.push('/publishers')}>{t('nav.publishers')}</Button>
+            <Button variant="ghost" className="justify-start" onClick={() => router.push('/sales')}>{t('nav.sales')}</Button>
             <Button variant="default" className="mt-2" onClick={() => router.push('/account')}>{t('nav.sign_in')}</Button>
           </div>
         </nav>
