@@ -9,6 +9,14 @@ function getLocale(): string {
 
 const translations: Record<string, Record<string, string>> = {
   ru: {
+    'site.name': 'Маркет активов',
+    'header.search_placeholder': 'Поиск ассетов...',
+    'nav.browse': 'Каталог',
+    'nav.publishers': 'Издатели',
+    'nav.sales': 'Акции',
+    'nav.sign_in': 'Войти',
+    'account.buyer': 'Покупатель',
+    'account.seller': 'Продавец',
     'admin.sign_in': 'Вход администратора',
     'admin.enter_credentials': 'Введите пароль администратора',
     'admin.password': 'Пароль',
@@ -22,6 +30,14 @@ const translations: Record<string, Record<string, string>> = {
     'admin.wrong_password': 'Неверный пароль, попробуйте ещё раз.'
   },
   en: {
+    'site.name': 'Asset Marketplace',
+    'header.search_placeholder': 'Search assets...',
+    'nav.browse': 'Browse',
+    'nav.publishers': 'Publishers',
+    'nav.sales': 'Sales',
+    'nav.sign_in': 'Sign In',
+    'account.buyer': 'Buyer',
+    'account.seller': 'Seller',
     'admin.sign_in': 'Admin sign in',
     'admin.enter_credentials': 'Enter admin credentials',
     'admin.password': 'Password',

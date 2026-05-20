@@ -28,7 +28,7 @@ export function Header() {
           <div className="flex size-8 items-center justify-center rounded-lg bg-foreground text-background font-bold">
             A
           </div>
-          <span className="hidden sm:inline">Asset Store</span>
+          <span className="hidden sm:inline">{t('site.name')}</span>
         </button>
 
         {/* Search Bar - Desktop */}
@@ -37,7 +37,7 @@ export function Header() {
             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search assets..."
+              placeholder={t('header.search_placeholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 bg-secondary border-0"
@@ -47,9 +47,9 @@ export function Header() {
 
         {/* Desktop Nav */}
         <nav className="hidden items-center gap-1 md:flex">
-          <Button variant="ghost" size="sm">Browse</Button>
-          <Button variant="ghost" size="sm">Publishers</Button>
-          <Button variant="ghost" size="sm">Sales</Button>
+          <Button variant="ghost" size="sm">{t('nav.browse')}</Button>
+          <Button variant="ghost" size="sm">{t('nav.publishers')}</Button>
+          <Button variant="ghost" size="sm">{t('nav.sales')}</Button>
         </nav>
 
         {/* Actions */}
@@ -107,10 +107,10 @@ export function Header() {
       {mobileMenuOpen && (
         <nav className="border-t border-border bg-background px-4 py-4 md:hidden">
           <div className="flex flex-col gap-2">
-            <Button variant="ghost" className="justify-start">Browse</Button>
-            <Button variant="ghost" className="justify-start">Publishers</Button>
-            <Button variant="ghost" className="justify-start">Sales</Button>
-            <Button variant="default" className="mt-2">Sign In</Button>
+            <Button variant="ghost" className="justify-start">{t('nav.browse')}</Button>
+            <Button variant="ghost" className="justify-start">{t('nav.publishers')}</Button>
+            <Button variant="ghost" className="justify-start">{t('nav.sales')}</Button>
+            <Button variant="default" className="mt-2" onClick={() => router.push('/account')}>{t('nav.sign_in')}</Button>
           </div>
         </nav>
       )}
