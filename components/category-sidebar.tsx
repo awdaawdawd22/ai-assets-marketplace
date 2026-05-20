@@ -66,7 +66,7 @@ export function CategorySidebar() {
                 {iconMap[category.icon]}
                 <span>{category.name}</span>
               </div>
-              <span className="text-xs text-muted-foreground">{category.count.toLocaleString()}</span>
+              <span className="text-xs text-muted-foreground">{category.count}</span>
             </button>
           ))}
         </nav>
