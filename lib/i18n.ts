@@ -15,6 +15,7 @@ const translations: Record<string, Record<string, string>> = {
     'nav.publishers': 'Издатели',
     'nav.sales': 'Акции',
     'nav.sign_in': 'Войти',
+    'nav.checkout': 'Оформить',
     'account.buyer': 'Покупатель',
     'account.seller': 'Продавец',
     'admin.sign_in': 'Вход администратора',
@@ -36,6 +37,7 @@ const translations: Record<string, Record<string, string>> = {
     'nav.publishers': 'Publishers',
     'nav.sales': 'Sales',
     'nav.sign_in': 'Sign In',
+    'nav.checkout': 'Checkout',
     'account.buyer': 'Buyer',
     'account.seller': 'Seller',
     'admin.sign_in': 'Admin sign in',
@@ -51,6 +53,7 @@ const translations: Record<string, Record<string, string>> = {
     'admin.wrong_password': 'Wrong password, try again.'
   }
 }
+
 
 export function t(key: string) {
   const locale = getLocale()

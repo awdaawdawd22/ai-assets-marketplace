@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { useStore } from '@/lib/store'
+import { t } from '@/lib/i18n'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
@@ -60,7 +61,7 @@ export function Header() {
             className="hidden sm:flex items-center gap-2 rounded-md px-3 py-1 text-sm bg-secondary/60"
           >
             {role === 'buyer' ? <User className="size-4" /> : <User2 className="size-4" />}
-            <span className="text-sm">{role === 'buyer' ? 'Buyer' : 'Seller'}</span>
+            <span className="text-sm">{role === 'buyer' ? t('account.buyer') : t('account.seller')}</span>
           </button>
           <Button
             variant="ghost"
@@ -75,8 +76,8 @@ export function Header() {
               </Badge>
             )}
           </Button>
-          <Button variant="default" size="sm" className="hidden sm:flex" onClick={() => router.push('/checkout')}>
-            Checkout
+            <Button variant="default" size="sm" className="hidden sm:flex" onClick={() => router.push('/checkout')}>
+            {t('nav.checkout')}
           </Button>
           <Button
             variant="ghost"
@@ -93,13 +94,13 @@ export function Header() {
       <div className="border-t border-border px-4 py-2 md:hidden">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Search assets..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 bg-secondary border-0"
-          />
+                      <Input
+                        type="search"
+                        placeholder={t('header.search_placeholder')}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full pl-10 bg-secondary border-0"
+                      />
         </div>
       </div>
 
