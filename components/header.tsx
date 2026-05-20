@@ -48,9 +48,9 @@ export function Header() {
 
         {/* Desktop Nav */}
         <nav className="hidden items-center gap-1 md:flex">
-          <Button variant="ghost" size="sm">{t('nav.browse')}</Button>
-          <Button variant="ghost" size="sm">{t('nav.publishers')}</Button>
-          <Button variant="ghost" size="sm">{t('nav.sales')}</Button>
+          <Button variant="ghost" size="sm" onClick={() => router.push('/browse')}>{t('nav.browse')}</Button>
+          <Button variant="ghost" size="sm" onClick={() => router.push('/publishers')}>{t('nav.publishers')}</Button>
+          <Button variant="ghost" size="sm" onClick={() => router.push('/sales')}>{t('nav.sales')}</Button>
         </nav>
 
         {/* Actions */}
@@ -78,7 +78,10 @@ export function Header() {
           </Button>
             <Button variant="default" size="sm" className="hidden sm:flex" onClick={() => router.push('/checkout')}>
             {t('nav.checkout')}
-          </Button>
+            </Button>
+            <Button variant="secondary" size="sm" className="hidden sm:flex" onClick={() => router.push('/sell')}>
+              Продавай
+            </Button>
           <Button
             variant="ghost"
             size="icon"
