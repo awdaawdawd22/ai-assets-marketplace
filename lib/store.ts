@@ -17,6 +17,9 @@ interface StoreState {
   // Role: buyer | seller
   role: 'buyer' | 'seller'
   
+  // User
+  user: { id: string; email: string; name: string; role: 'buyer' | 'seller' } | null
+  
   // Actions
   setSelectedAssetSlug: (slug: string | null) => void
   setSearchQuery: (query: string) => void
@@ -28,6 +31,8 @@ interface StoreState {
   clearCart: () => void
   setRole: (role: 'buyer' | 'seller') => void
   toggleRole: () => void
+  setUser: (user: any) => void
+  logout: () => void
 }
 
 export const useStore = create<StoreState>()(
@@ -39,7 +44,8 @@ export const useStore = create<StoreState>()(
       priceFilter: 'all',
       sortBy: 'relevance',
       cart: [],
-        role: 'buyer',
+      role: 'buyer',
+      user: null,
       
       setSelectedAssetSlug: (slug) => set({ selectedAssetSlug: slug }),
       setSearchQuery: (query) => set({ searchQuery: query }),
@@ -55,10 +61,12 @@ export const useStore = create<StoreState>()(
       clearCart: () => set({ cart: [] }),
       setRole: (role) => set({ role }),
       toggleRole: () => set((state) => ({ role: state.role === 'buyer' ? 'seller' : 'buyer' })),
+      setUser: (user) => set({ user, role: user?.role || 'buyer' }),
+      logout: () => set({ user: null, cart: [] }),
     }),
     {
       name: 'asset-store',
-      partialize: (state) => ({ cart: state.cart, role: state.role }),
+      partialize: (state) => ({ cart: state.cart, role: state.role, user: state.user }),
     }
   )
 )
