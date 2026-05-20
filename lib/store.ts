@@ -1,6 +1,7 @@
 'use client'
 
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import { Asset } from './types'
 
 interface StoreState {
@@ -25,24 +26,32 @@ interface StoreState {
   clearCart: () => void
 }
 
-export const useStore = create<StoreState>((set) => ({
-  selectedAssetSlug: null,
-  searchQuery: '',
-  selectedCategory: null,
-  priceFilter: 'all',
-  sortBy: 'relevance',
-  cart: [],
-  
-  setSelectedAssetSlug: (slug) => set({ selectedAssetSlug: slug }),
-  setSearchQuery: (query) => set({ searchQuery: query }),
-  setSelectedCategory: (category) => set({ selectedCategory: category }),
-  setPriceFilter: (filter) => set({ priceFilter: filter }),
-  setSortBy: (sort) => set({ sortBy: sort }),
-  addToCart: (asset) => set((state) => ({ 
-    cart: state.cart.find(a => a.id === asset.id) ? state.cart : [...state.cart, asset] 
-  })),
-  removeFromCart: (assetId) => set((state) => ({ 
-    cart: state.cart.filter(a => a.id !== assetId) 
-  })),
-  clearCart: () => set({ cart: [] }),
-}))
+export const useStore = create<StoreState>()(
+  persist(
+    (set) => ({
+      selectedAssetSlug: null,
+      searchQuery: '',
+      selectedCategory: null,
+      priceFilter: 'all',
+      sortBy: 'relevance',
+      cart: [],
+      
+      setSelectedAssetSlug: (slug) => set({ selectedAssetSlug: slug }),
+      setSearchQuery: (query) => set({ searchQuery: query }),
+      setSelectedCategory: (category) => set({ selectedCategory: category }),
+      setPriceFilter: (filter) => set({ priceFilter: filter }),
+      setSortBy: (sort) => set({ sortBy: sort }),
+      addToCart: (asset) => set((state) => ({ 
+        cart: state.cart.find(a => a.id === asset.id) ? state.cart : [...state.cart, asset] 
+      })),
+      removeFromCart: (assetId) => set((state) => ({ 
+        cart: state.cart.filter(a => a.id !== assetId) 
+      })),
+      clearCart: () => set({ cart: [] }),
+    }),
+    {
+      name: 'asset-store',
+      partialize: (state) => ({ cart: state.cart }),
+    }
+  )
+)

@@ -1,19 +1,63 @@
 'use client'
 
-import { Asset, Review } from './types'
-import { assets, reviews, categories as mockCategories, getAssetBySlug as getAssetBySlugSync } from './mock-data'
+import { Asset, Order, Review } from './types'
+import {
+  assets,
+  reviews,
+  categories as mockCategories,
+  getAssetBySlug as getAssetBySlugSync,
+} from './mock-data'
 
 // Simulate network delay
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 // Simulate random failures for testing error states (disable for production)
 const SIMULATE_ERRORS = false
 const ERROR_RATE = 0.1 // 10% chance of error
 
+const ASSET_OVERRIDES_KEY = 'ai-assets-admin-overrides'
+const ORDER_STORAGE_KEY = 'ai-assets-orders'
+
 function maybeThrow() {
   if (SIMULATE_ERRORS && Math.random() < ERROR_RATE) {
     throw new Error('Network error: Failed to fetch data')
   }
+}
+
+function isClient() {
+  return typeof window !== 'undefined'
+}
+
+function loadAssetOverrides(): Record<string, Partial<Asset>> {
+  if (!isClient()) return {}
+
+  try {
+    const raw = window.localStorage.getItem(ASSET_OVERRIDES_KEY)
+    return raw ? (JSON.parse(raw) as Record<string, Partial<Asset>>) : {}
+  } catch {
+    return {}
+  }
+}
+
+function saveAssetOverrides(overrides: Record<string, Partial<Asset>>) {
+  if (!isClient()) return
+  window.localStorage.setItem(ASSET_OVERRIDES_KEY, JSON.stringify(overrides))
+}
+
+function loadOrders(): Order[] {
+  if (!isClient()) return []
+
+  try {
+    const raw = window.localStorage.getItem(ORDER_STORAGE_KEY)
+    return raw ? (JSON.parse(raw) as Order[]) : []
+  } catch {
+    return []
+  }
+}
+
+function saveOrders(orders: Order[]) {
+  if (!isClient()) return
+  window.localStorage.setItem(ORDER_STORAGE_KEY, JSON.stringify(orders))
 }
 
 export interface FetchAssetsParams {
@@ -28,36 +72,61 @@ export interface FetchAssetsResult {
   total: number
 }
 
+export function getAssetsWithOverrides(): Asset[] {
+  const overrides = loadAssetOverrides()
+  return assets.map((asset) => ({
+    ...asset,
+    ...(overrides[asset.slug] ?? {}),
+  }))
+}
+
+export function saveAssetOverride(slug: string, override: Partial<Asset>) {
+  if (!isClient()) return
+  const overrides = loadAssetOverrides()
+  overrides[slug] = {
+    ...overrides[slug],
+    ...override,
+  }
+  saveAssetOverrides(overrides)
+}
+
+export function deleteAssetOverride(slug: string) {
+  if (!isClient()) return
+  const overrides = loadAssetOverrides()
+  delete overrides[slug]
+  saveAssetOverrides(overrides)
+}
+
 export async function fetchAssets(params: FetchAssetsParams): Promise<FetchAssetsResult> {
   await delay(300 + Math.random() * 400) // 300-700ms delay
   maybeThrow()
-  
-  let filtered = [...assets]
+
+  let filtered = [...getAssetsWithOverrides()]
 
   // Search filter
   if (params.searchQuery) {
     const query = params.searchQuery.toLowerCase()
     filtered = filtered.filter(
-      a =>
+      (a) =>
         a.name.toLowerCase().includes(query) ||
         a.shortDescription.toLowerCase().includes(query) ||
-        a.tags.some(t => t.toLowerCase().includes(query)) ||
+        a.tags.some((t) => t.toLowerCase().includes(query)) ||
         a.publisher.name.toLowerCase().includes(query)
     )
   }
 
   // Category filter
   if (params.category && params.category !== 'all') {
-    filtered = filtered.filter(a => a.category === params.category)
+    filtered = filtered.filter((a) => a.category === params.category)
   }
 
   // Price filter
   if (params.priceFilter === 'free') {
-    filtered = filtered.filter(a => a.price === 0)
+    filtered = filtered.filter((a) => a.price === 0)
   } else if (params.priceFilter === 'paid') {
-    filtered = filtered.filter(a => a.price > 0)
+    filtered = filtered.filter((a) => a.price > 0)
   } else if (params.priceFilter === 'on-sale') {
-    filtered = filtered.filter(a => a.isOnSale)
+    filtered = filtered.filter((a) => a.isOnSale)
   }
 
   // Sort
@@ -95,23 +164,54 @@ export async function fetchAssets(params: FetchAssetsParams): Promise<FetchAsset
 export async function fetchAssetBySlug(slug: string): Promise<Asset | null> {
   await delay(200 + Math.random() * 300) // 200-500ms delay
   maybeThrow()
-  
-  const asset = getAssetBySlugSync(slug)
+
+  const asset = getAssetsWithOverrides().find((item) => item.slug === slug)
   return asset || null
 }
 
 export async function fetchReviewsForAsset(assetId: string): Promise<Review[]> {
   await delay(150 + Math.random() * 250) // 150-400ms delay
   maybeThrow()
-  
-  return reviews.filter(r => r.assetId === assetId)
+
+  return reviews.filter((r) => r.assetId === assetId)
 }
 
 export async function fetchCategories() {
   await delay(100 + Math.random() * 100) // 100-200ms delay
   maybeThrow()
-  
+
   return mockCategories
+}
+
+export async function fetchOrders(): Promise<Order[]> {
+  await delay(150 + Math.random() * 200)
+  maybeThrow()
+
+  return loadOrders()
+}
+
+export async function saveOrder(order: Order): Promise<Order> {
+  await delay(100 + Math.random() * 150)
+  maybeThrow()
+
+  const current = loadOrders()
+  saveOrders([order, ...current])
+  return order
+}
+
+export async function updateOrderStatus(orderId: string, status: Order['status']): Promise<Order | null> {
+  await delay(100 + Math.random() * 150)
+  maybeThrow()
+
+  const current = loadOrders()
+  const orderIndex = current.findIndex((order) => order.id === orderId)
+  if (orderIndex === -1) return null
+
+  const updatedOrder = { ...current[orderIndex], status }
+  current[orderIndex] = updatedOrder
+  saveOrders(current)
+
+  return updatedOrder
 }
 
 // Hook for SWR
@@ -125,4 +225,8 @@ export function getAssetKey(slug: string) {
 
 export function getReviewsKey(assetId: string) {
   return ['reviews', assetId]
+}
+
+export function getOrdersKey() {
+  return ['orders']
 }

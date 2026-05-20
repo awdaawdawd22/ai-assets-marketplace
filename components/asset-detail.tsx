@@ -30,15 +30,21 @@ import {
 } from 'lucide-react'
 
 interface AssetDetailProps {
-  assetSlug: string
+  assetSlug?: string
+  asset?: Asset
 }
 
-export function AssetDetail({ assetSlug }: AssetDetailProps) {
+export function AssetDetail({ assetSlug, asset: initialAsset }: AssetDetailProps) {
   const { setSelectedAssetSlug, addToCart, cart } = useStore()
-  
+
+  // If the caller already provided a loaded `asset` object, skip SWR and render directly
+  if (initialAsset) {
+    return <AssetDetailContent asset={initialAsset} />
+  }
+
   const { data: asset, error, isLoading, mutate } = useSWR(
-    getAssetKey(assetSlug),
-    () => fetchAssetBySlug(assetSlug),
+    assetSlug ? getAssetKey(assetSlug) : null,
+    assetSlug ? () => fetchAssetBySlug(assetSlug) : null,
     { revalidateOnFocus: false }
   )
 

@@ -53,3 +53,11 @@ export interface Category {
 export type SortOption = 'relevance' | 'newest' | 'price-low' | 'price-high' | 'rating' | 'popular'
 
 export type PriceFilter = 'all' | 'free' | 'paid' | 'on-sale'
+
+export interface Order {
+  id: string
+  createdAt: string
+  status: 'completed' | 'pending' | 'cancelled'
+  total: number
+  items: Asset[]
+}

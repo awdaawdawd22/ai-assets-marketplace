@@ -6,10 +6,12 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { useStore } from '@/lib/store'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 export function Header() {
   const { searchQuery, setSearchQuery, cart, setSelectedAssetSlug } = useStore()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const router = useRouter()
 
   const handleLogoClick = () => {
     setSelectedAssetSlug(null)
@@ -52,7 +54,12 @@ export function Header() {
 
         {/* Actions */}
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="relative">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="relative"
+            onClick={() => router.push('/checkout')}
+          >
             <ShoppingCart className="size-5" />
             {cart.length > 0 && (
               <Badge className="absolute -right-1 -top-1 size-5 p-0 flex items-center justify-center text-xs">
@@ -60,8 +67,8 @@ export function Header() {
               </Badge>
             )}
           </Button>
-          <Button variant="default" size="sm" className="hidden sm:flex">
-            Sign In
+          <Button variant="default" size="sm" className="hidden sm:flex" onClick={() => router.push('/checkout')}>
+            Checkout
           </Button>
           <Button
             variant="ghost"
