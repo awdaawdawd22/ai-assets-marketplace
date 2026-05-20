@@ -1,6 +1,6 @@
 'use client'
 
-import { Search, ShoppingCart, Menu, X } from 'lucide-react'
+import { Search, ShoppingCart, Menu, X, User, User2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -9,7 +9,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 export function Header() {
-  const { searchQuery, setSearchQuery, cart, setSelectedAssetSlug } = useStore()
+  const { searchQuery, setSearchQuery, cart, setSelectedAssetSlug, role, toggleRole } = useStore()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const router = useRouter()
 
@@ -54,6 +54,14 @@ export function Header() {
 
         {/* Actions */}
         <div className="flex items-center gap-2">
+          <button
+            title="Toggle role"
+            onClick={() => toggleRole()}
+            className="hidden sm:flex items-center gap-2 rounded-md px-3 py-1 text-sm bg-secondary/60"
+          >
+            {role === 'buyer' ? <User className="size-4" /> : <User2 className="size-4" />}
+            <span className="text-sm">{role === 'buyer' ? 'Buyer' : 'Seller'}</span>
+          </button>
           <Button
             variant="ghost"
             size="icon"
